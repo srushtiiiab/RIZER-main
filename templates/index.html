@@ -1,0 +1,174 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article Summariser</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap" rel="stylesheet">
+    {% csrf_token %}
+    <meta name="csrf-token" content="{{ csrf_token }}">
+
+    <style>
+        body {
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+        }
+        .background-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+        .overlay-image {
+            position: absolute;
+            top: 35px;
+            left: 36%;
+            width: 30%;
+            object-fit: cover; /* Ensure the image covers the area */
+            opacity: 0.7; /* Adjust opacity to make the image semi-transparent */
+            z-index: 1;
+        }
+        .logo {
+            font-family: 'Caveat', cursive;
+            font-size: 3em;
+            position: absolute;
+            top: 20px;
+            left: 60px;
+            background: linear-gradient(45deg, #0bb58e96, #eff7f6);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            z-index: 2;
+        }
+        textarea {
+            width: 80%;
+            height: 200px;
+            background-color: #8a61cd8e;
+            color: #c2ace6;
+            border: none;
+            padding: 10px;
+            font-size: 1em;
+            border-radius: 5px;
+            font-family: Roboto;
+            resize: none;
+            font-size: 28px;
+            border-radius: 30px;
+            z-index: 2;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 1em;
+            color: #ffffff;
+            background-color: #6200ea;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 2;
+        }
+        button:hover {
+            background-color: #3700b3;
+        }
+        #result {
+            margin-top: 20px;
+            width: 80%;
+            padding: 10px;
+            background-color: #8a61cd77;
+            border-radius: 5px;
+            font-family: 'Open Sans', sans-serif;
+            z-index: 2;
+        }
+        #loading img {
+            width: 100px;
+        }
+        #loading {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #8a61cd85;
+            display: none;
+            z-index: 5;
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #ea00da22;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            z-index: 3;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 14px 20px;
+            font-size: 18px;
+        }
+        .navbar a:hover {
+            background-color: #575757;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'tts' %}">Speak aloud</a>
+        <a href="{% url 'mcqs' %}">MCQs</a>
+        <a href="{% url 'upload' %}">File summarize</a>
+        <a href="{% url 'login' %}">Login</a>
+    </div>
+    
+    <video class="background-video" autoplay muted loop>
+        <source src="{% static 'bg3.mp4' %}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    
+    <div class="logo">Rizer</div>
+    <textarea name="article" id="article" rows="20" cols="50" placeholder="Paste your article here..."></textarea>
+    <br>
+    <button id="summarize">Summarize</button>
+    <div id="result"></div>
+    <div id="overlay"></div>
+    <div id="loading">
+        <img src="{% static 'loading.gif' %}" alt="Loading...">
+    </div>
+
+    <script src="{% static 'script.js' %}"></script>
+</body>
+</html>

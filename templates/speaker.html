@@ -1,0 +1,186 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text To Speech Converter - GreatStack</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .hero {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: #fff;
+            overflow: hidden;
+            z-index: 1; /* Ensures content is on top of the background video */
+        }
+
+        .background-video {
+            position: fixed; /* Fix the video to the background */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1; /* Make sure the video stays behind other elements */
+        }
+
+        .hero h1 {
+            font-size: 45px;
+            font-weight: 500;
+            margin-top: -50px;
+            margin-bottom: 50px;
+        }
+
+        .hero h1 span {
+            color: #ff2963;
+        }
+
+        textarea {
+            width: 600px;
+            height: 250px;
+            background: #c406de66;
+            color: #fff;
+            font-size: 15px;
+            border: 0;
+            outline: 0;
+            padding: 20px;
+            border-radius: 10px;
+            resize: none;
+            margin-bottom: 30px;
+        }
+
+        textarea::placeholder {
+            font-size: 16px;
+            color: #ddd;
+        }
+
+        .row {
+            width: 600px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        button {
+            background: #ff2963;
+            color: #fff;
+            font-size: 16px;
+            padding: 10px 30px;
+            border-radius: 35px;
+            border: 0;
+            outline: 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        button img {
+            width: 16px;
+            margin-right: 10px;
+        }
+
+        select {
+            flex: 1;
+            color: #fff;
+            background: #4825c7;
+            height: 50px;
+            padding: 0 20px;
+            outline: 0;
+            border: 0;
+            border-radius: 35px;
+            appearance: none;
+            background-image: url(images/dropdown.png);
+            background-repeat: no-repeat;
+            background-size: 15px;
+            background-position-x: calc(100% - 20px);
+            background-position-y: 20px;
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #ea00da22;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            z-index: 3;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 14px 20px;
+            font-size: 18px;
+        }
+        .navbar a:hover {
+            background-color: #575757;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'tts' %}">Speak aloud</a>
+        <a href="{% url 'mcqs' %}">MCQs</a>
+        <a href="{% url 'upload' %}">File summarize</a>
+        <a href="{% url 'login' %}">Login</a>
+    </div>
+    <video class="background-video" autoplay muted loop>
+        <source src="{% static 'bg3.mp4' %}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div class="hero">
+        <h1> Text To Speech <span>Converter</span></h1>
+        <textarea placeholder="Write anything here..."></textarea>
+        <div class="row">
+            <select></select>
+        </div>
+        <button>Listen</button>
+    </div>
+    <script src="script.js"></script>
+    <script>
+        let speech = new SpeechSynthesisUtterance();
+
+        let voices = [];
+
+        let voiceSelect = document.querySelector("select");
+
+        window.speechSynthesis.onvoiceschanged = () => {
+            voices = window.speechSynthesis.getVoices();
+            speech.voice = voices[0];
+
+            voices.forEach((voice, i) => (voiceSelect.options[i] = new Option(voice.name, i)));
+        };
+
+        voiceSelect.addEventListener("change", () => {
+            speech.voice = voices[voiceSelect.value];
+        });
+
+        document.querySelector("button").addEventListener("click", () => {
+            speech.text = document.querySelector("textarea").value;
+            window.speechSynthesis.speak(speech);
+        });
+    </script>
+</body>
+</html>
